@@ -5,11 +5,19 @@ import type {
   AtpAgentOptions,
 } from "@atproto/api";
 import { AtpAgent, RichText } from "@atproto/api";
-
+import tweets from "./tweets.json"; // Assuming the tweets JSON is properly imported
+import { log } from "mathjs"; // Use a math library for logarithmic calculations
+  
 interface BotOptions {
   service: string | URL;
   dryRun: boolean;
 }
+// Calculate weights using log(2 + favorites)
+const weights = tweets.map(tweet => Math.log(2 + tweet.favorites));
+// Normalize weights for probabilistic selection
+const totalWeight = weights.reduce((sum, weight) => sum + weight, 0);
+const normalizedWeights = weights.map(weight => weight / totalWeight);
+
 
 export default class Bot {
   #agent;
